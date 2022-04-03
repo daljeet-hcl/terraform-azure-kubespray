@@ -1,6 +1,6 @@
 # // Azure location configuration
 variable azure_location {
-  default = "japaneast"
+  default = "centralindia"
 }
 
 
@@ -68,7 +68,7 @@ variable master_vm_osdisk_size_in_gb {
   default = "30"
 }
 variable master_subnet_cidr {
-  default = "10.10.1.0/24"
+  default = ["10.10.1.0/24"]
 }
 variable domain_name_label {
   default = "kubespray"
@@ -105,7 +105,7 @@ variable node_vm_osdisk_size_in_gb {
   default = "30"
 }
 variable node_subnet_cidr {
-  default = "10.10.2.0/24"
+  default = ["10.10.2.0/24"]
 }
 
 

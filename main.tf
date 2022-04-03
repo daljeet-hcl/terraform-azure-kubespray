@@ -2,12 +2,21 @@
 # SETUP PROVIDER AND BACKEND
 # -----------------------------------------------------------------
 
-provider "azurerm" {
-  #version = ">= 1.3.0"
+terraform {
 
-  #subscription_id = "${var.azure_subscription_id}"
-  #tenant_id       = "${var.azure_tenant_id}"
-}
+   required_version = ">=0.12"
+
+   required_providers {
+     azurerm = {
+       source = "hashicorp/azurerm"
+       version = "~>2.0"
+     }
+   }
+ }
+
+provider "azurerm" {
+  features {}
+   }
 
 #terraform {
 #  backend "azurerm" {}
@@ -74,7 +83,7 @@ resource "azurerm_subnet" "kubespray-master-subnet" {
   resource_group_name = "${azurerm_resource_group.kubespray.name}"
 
   virtual_network_name = "${azurerm_virtual_network.kubespray-vnet.name}"
-  address_prefix       = "${var.master_subnet_cidr}"
+  address_prefixes       = "${var.master_subnet_cidr}"
 }
 
 resource "azurerm_subnet" "kubespray-node-subnet" {
@@ -82,7 +91,7 @@ resource "azurerm_subnet" "kubespray-node-subnet" {
   resource_group_name = "${azurerm_resource_group.kubespray.name}"
 
   virtual_network_name = "${azurerm_virtual_network.kubespray-vnet.name}"
-  address_prefix       = "${var.node_subnet_cidr}"
+  address_prefixes       = "${var.node_subnet_cidr}"
 }
 
 resource "azurerm_network_security_group" "kubespray-master-nsg" {
@@ -175,7 +184,7 @@ resource "azurerm_lb" "k8s-master-lb" {
 
 resource "azurerm_lb_backend_address_pool" "k8s-master-lb-bepool" {
   name                = "${var.resource_name_prefix}-master-backend"
-  resource_group_name = "${azurerm_resource_group.kubespray.name}"
+  #resource_group_name = "${azurerm_resource_group.kubespray.name}"
 
   loadbalancer_id = "${azurerm_lb.k8s-master-lb.id}"
 }
@@ -188,7 +197,7 @@ resource "azurerm_lb_rule" "k8s-api-lb-rule" {
   name                = "${var.resource_name_prefix}-api"
   resource_group_name = "${azurerm_resource_group.kubespray.name}"
 
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.k8s-master-lb-bepool.id}"
+  #backend_address_pool_id        = "${azurerm_lb_backend_address_pool.k8s-master-lb-bepool.id}"
   loadbalancer_id                = "${azurerm_lb.k8s-master-lb.id}"
   probe_id                       = "${azurerm_lb_probe.k8s-api-lb-probe.id}"
   frontend_ip_configuration_name = "${var.resource_name_prefix}-master-frontend"
@@ -264,7 +273,7 @@ resource "azurerm_network_interface" "k8s-master-nic" {
   location            = "${var.azure_location}"
   resource_group_name = "${azurerm_resource_group.kubespray.name}"
 
-  network_security_group_id = "${azurerm_network_security_group.kubespray-master-nsg.id}"
+  #network_security_group_id = "${azurerm_network_security_group.kubespray-master-nsg.id}"
   enable_ip_forwarding      = true
 
   ip_configuration {
@@ -272,8 +281,8 @@ resource "azurerm_network_interface" "k8s-master-nic" {
     subnet_id                               = "${azurerm_subnet.kubespray-master-subnet.id}"
     private_ip_address_allocation           = "dynamic"
     public_ip_address_id                    = "${element(azurerm_public_ip.k8s-master-publicip.*.id, count.index)}" 
-    load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.k8s-master-lb-bepool.id}"]
-    load_balancer_inbound_nat_rules_ids     = ["${element(azurerm_lb_nat_rule.ssh-master-nat.*.id, count.index)}"]
+    #load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.k8s-master-lb-bepool.id}"]
+    #load_balancer_inbound_nat_rules_ids     = ["${element(azurerm_lb_nat_rule.ssh-master-nat.*.id, count.index)}"]
   }
 }
 
@@ -357,7 +366,7 @@ resource "azurerm_network_interface" "k8s-node-nic" {
   location            = "${var.azure_location}"
   resource_group_name = "${azurerm_resource_group.kubespray.name}"
 
-  network_security_group_id = "${azurerm_network_security_group.kubespray-node-nsg.id}"
+  #network_security_group_id = "${azurerm_network_security_group.kubespray-node-nsg.id}"
   enable_ip_forwarding      = true
 
   ip_configuration {
