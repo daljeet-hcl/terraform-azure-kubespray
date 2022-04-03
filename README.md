@@ -1,6 +1,6 @@
 # Install Kubernetes on Azure with terraform and kubespray
 
-- Using cloudshell on Azure
+- Using bash/zsh shell on your Linux/mac/PC
 - Deploy VMs with Terraform
 - Deploy Kubernetes cluster with kubespray (Ansible)
 - (For my learning about Kubernetes)
